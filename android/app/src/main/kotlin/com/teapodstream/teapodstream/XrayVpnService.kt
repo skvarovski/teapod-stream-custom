@@ -257,6 +257,7 @@ class XrayVpnService : VpnService() {
         when (intent?.action) {
             ACTION_DISCONNECT -> {
                 userRequestedDisconnect.set(true)
+                try { File(filesDir, "user_disconnected.flag").createNewFile() } catch (_: Exception) {}
                 // Signal disconnecting immediately so the button turns yellow
                 // even when triggered from the notification (no Flutter-side handler).
                 setState("disconnecting")
@@ -303,6 +304,7 @@ class XrayVpnService : VpnService() {
                     vpnMode, ssPrefix, proxyOnly, showNotification, killSwitch, allowIcmp, blockQuic, mtu)
                     .save(filesDir, ::log)
                 userRequestedDisconnect.set(false)
+                try { File(filesDir, "user_disconnected.flag").delete() } catch (_: Exception) {}
                 ensureForeground()
                 Thread {
                     startVpn(xrayConfig, socksPort, socksUser, socksPassword,
@@ -324,6 +326,7 @@ class XrayVpnService : VpnService() {
                         openApp()
                     } else {
                         userRequestedDisconnect.set(false)
+                        try { File(filesDir, "user_disconnected.flag").delete() } catch (_: Exception) {}
                         setState("reconnecting")
                         val configText = configFile.readText()
                         // Load SOCKS credentials from saved file (survives reconnect)

@@ -83,6 +83,16 @@
                 android:value="true" />
         </service>
 
+        <!-- Auto-start on device boot (when "Запуск при загрузке" is enabled in settings) -->
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
         <!-- Automation: Tasker/Macrodroid via com.teapodstream.CONNECT / .DISCONNECT broadcasts -->
         <receiver
             android:name=".VpnCommandReceiver"

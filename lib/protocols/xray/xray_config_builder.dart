@@ -82,17 +82,10 @@ class XrayConfigBuilder {
           // would force browsers to wait ~55s for QUIC retransmission to time out,
           // and rerouting QUIC to 'direct' would leak the destination outside the tunnel.
           if (options.dnsMode == DnsMode.proxy) ...[
-            // DoH/DoT connections from the DNS module go direct (not through VLESS proxy).
-            // xray protects these sockets via VpnService.protect(), so they bypass the TUN
-            // and reach the DNS server without going through the VPN tunnel.
-            // Going through VLESS causes unreliable HTTP/2 — each query opens a new
-            // VLESS connection and responses timeout because Google closes them quickly.
-            // DoH/DoT encrypt DNS independently of VPN, so direct is still private.
-            // UDP DNS continues to go through proxy to preserve VPN-side DNS resolution.
             {
               'type': 'field',
               'inboundTag': ['dns-module'],
-              'outboundTag': options.dnsServer.type == DnsType.udp ? 'proxy' : 'direct',
+              'outboundTag': 'proxy',
             },
             // Intercept DNS queries from user apps and handle them via xray's DNS module.
             {

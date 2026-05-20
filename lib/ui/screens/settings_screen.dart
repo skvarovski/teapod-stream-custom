@@ -400,6 +400,14 @@ class _SettingsBodyState extends State<_SettingsBody> {
           ),
           _RowToggle(
             t: t,
+            title: 'Запуск при загрузке',
+            hint: 'Подключаться автоматически при перезагрузке устройства',
+            value: s.autoStartOnBoot,
+            locked: locked,
+            onChange: (v) => widget.onUpdate(s.copyWith(autoStartOnBoot: v)),
+          ),
+          _RowToggle(
+            t: t,
             title: 'Уведомление',
             hint: 'Скорость и кнопка отключения в шторке',
             value: s.showNotification,
